@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { DollarSign, RefreshCw } from 'lucide-react';
+import { DollarSign, RefreshCw, Send } from 'lucide-react';
+import { sendTelegramNotification, formatUVAMessage } from '../utils/telegram';
 
 export default function UVACalculator() {
   const [uvaValue, setUvaValue] = useState(null);
   const [fecha, setFecha] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [telegramStatus, setTelegramStatus] = useState(null);
 
   const fetchUVAValue = async () => {
     setLoading(true);
@@ -35,14 +37,30 @@ export default function UVACalculator() {
         const today = new Date().toISOString().split('T')[0];
         const todayData = data.find(item => item.fecha === today);
         
+        let valorFinal, fechaFinal;
+        
         if (todayData) {
-          setUvaValue(todayData.valor);
-          setFecha(todayData.fecha);
+          valorFinal = todayData.valor;
+          fechaFinal = todayData.fecha;
         } else {
           const latestData = data[data.length - 1];
-          setUvaValue(latestData.valor);
-          setFecha(latestData.fecha);
+          valorFinal = latestData.valor;
+          fechaFinal = latestData.fecha;
           setError('No hay datos para hoy. Mostrando el valor más reciente.');
+        }
+        
+        setUvaValue(valorFinal);
+        setFecha(fechaFinal);
+        
+        // Enviar notificación a Telegram
+        setTelegramStatus('enviando');
+        const message = formatUVAMessage(valorFinal, fechaFinal);
+        const sent = await sendTelegramNotification(message);
+        setTelegramStatus(sent ? 'enviado' : 'error');
+        
+        // Limpiar el estado después de 3 segundos
+        if (sent) {
+          setTimeout(() => setTelegramStatus(null), 3000);
         }
       } else {
         throw new Error('No se encontraron datos en la respuesta');
@@ -105,6 +123,27 @@ export default function UVACalculator() {
         {error && (
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
             <p className="text-yellow-800 text-sm">{error}</p>
+          </div>
+        )}
+
+        {telegramStatus === 'enviando' && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 flex items-center gap-2">
+            <Send className="w-4 h-4 text-blue-600 animate-pulse" />
+            <p className="text-blue-800 text-sm">Enviando notificación a Telegram...</p>
+          </div>
+        )}
+
+        {telegramStatus === 'enviado' && (
+          <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4 flex items-center gap-2">
+            <Send className="w-4 h-4 text-green-600" />
+            <p className="text-green-800 text-sm">✓ Notificación enviada a Telegram</p>
+          </div>
+        )}
+
+        {telegramStatus === 'error' && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4 flex items-center gap-2">
+            <Send className="w-4 h-4 text-red-600" />
+            <p className="text-red-800 text-sm">No se pudo enviar la notificación. Verifica la configuración de Telegram.</p>
           </div>
         )}
 

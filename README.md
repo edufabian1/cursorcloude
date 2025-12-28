@@ -61,7 +61,7 @@ Después de instalar Node.js, **cierra y vuelve a abrir** tu terminal (PowerShel
 
 1. Navega al directorio del proyecto:
 ```bash
-cd C:\Users\Edu\Documents\cursorcloude
+cd ruta-a-tu-proyecto
 ```
 
 2. Instala las dependencias:
@@ -121,20 +121,15 @@ cursorcloude/
 2. Configura el build command: `npm run build`
 3. Configura el publish directory: `dist`
 
-### Opción 3: GitHub Pages ✅ (Ya Configurado)
-La aplicación está desplegada en GitHub Pages:
-- 🌐 **URL en vivo**: https://edufabian1.github.io/cursorcloude/
-
-**Para actualizar el despliegue:**
-```bash
-npm run deploy
+### Opción 3: GitHub Pages
+1. Instala `gh-pages`: `npm install --save-dev gh-pages`
+2. Agrega al `package.json`:
+```json
+"scripts": {
+  "deploy": "npm run build && gh-pages -d dist"
+}
 ```
-
-**Configuración realizada:**
-- ✅ `gh-pages` instalado
-- ✅ Script `deploy` configurado en `package.json`
-- ✅ Base path configurado en `vite.config.js`
-- ✅ Despliegue inicial completado
+3. Ejecuta: `npm run deploy`
 
 ## 🔧 Tecnologías Utilizadas
 
@@ -144,9 +139,26 @@ npm run deploy
 - **Lucide React** - Iconos
 - **ArgentinaDatos API** - API para datos financieros
 
+## 📱 Notificaciones por Telegram
+
+La aplicación puede enviar notificaciones automáticas a Telegram cada vez que se consulta el valor del UVA.
+
+**Para configurar:**
+1. Crea un bot en Telegram usando @BotFather
+2. Obtén tu Chat ID
+3. Crea un archivo `.env` en la raíz del proyecto con:
+   ```env
+   VITE_TELEGRAM_BOT_TOKEN=tu_token_aqui
+   VITE_TELEGRAM_CHAT_ID=tu_chat_id_aqui
+   ```
+4. Sigue las instrucciones detalladas en `TELEGRAM_SETUP.md`
+
+**Nota:** Las notificaciones son opcionales. Si no configuras Telegram, la aplicación funcionará normalmente sin enviar notificaciones.
+
 ## 📝 Notas
 
 - ✅ **Conectado a API real**: El proyecto está conectado a la API de ArgentinaDatos.com y obtiene datos en tiempo real
+- ✅ **Notificaciones por Telegram**: Opcional, configurable mediante variables de entorno
 - El proxy configurado en `vite.config.js` permite evitar problemas de CORS durante el desarrollo
 - En producción, la aplicación se conecta directamente a la API
 
