@@ -121,15 +121,20 @@ cursorcloude/
 2. Configura el build command: `npm run build`
 3. Configura el publish directory: `dist`
 
-### Opción 3: GitHub Pages
-1. Instala `gh-pages`: `npm install --save-dev gh-pages`
-2. Agrega al `package.json`:
-```json
-"scripts": {
-  "deploy": "npm run build && gh-pages -d dist"
-}
+### Opción 3: GitHub Pages ✅ (Ya Configurado)
+La aplicación está desplegada en GitHub Pages:
+- 🌐 **URL en vivo**: https://edufabian1.github.io/cursorcloude/
+
+**Para actualizar el despliegue:**
+```bash
+npm run deploy
 ```
-3. Ejecuta: `npm run deploy`
+
+**Configuración realizada:**
+- ✅ `gh-pages` instalado
+- ✅ Script `deploy` configurado en `package.json`
+- ✅ Base path configurado en `vite.config.js`
+- ✅ Despliegue inicial completado
 
 ## 🔧 Tecnologías Utilizadas
 
